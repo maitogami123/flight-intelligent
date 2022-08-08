@@ -1,0 +1,66 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+
+body {
+    padding: 54px 36px;
+}
+
+.center {
+    text-align: center;
+}
+
+.report__heading {
+    margin: 16px 0;
+}
+
+.report__date {
+    margin: 16px 0;
+}
+
+.report__info {
+    margin: 16px 0;
+}
+
+
+.report__logo-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.report__details {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.report__item, .report__flight-number {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.report__item {
+    position: relative;
+    margin-left: 20px;
+}
+
+.report__item::after {
+    content: '';
+    position: absolute;
+    left: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-left: 9px solid #949494;
+    border-top: 7px solid transparent;
+    border-bottom: 7px solid transparent;
+    padding-right: 5px;
+}
+
+.item__name {
+    color: #444444;
+}
