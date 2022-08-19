@@ -1,7 +1,6 @@
 const {xlsxReader} = require('./sub_module/file_reader')
-const generateHTML = require('./sub_module/generate_html')
 const dataFormat = require('./sub_module/data_format')
-const captureScreenshot = require('./sub_module/export_pdf')
+const generatePDFDocument = require('./sub_module/export_pdf')
 
 data = xlsxReader('./data/Flight data.xlsx');
 
@@ -11,9 +10,16 @@ function main() {
     Promise.all(convertedData)
     .then(result => {
         result.map(function(item) {
-            captureScreenshot(item)
+            generatePDFDocument(item)
         })
     });
 }
 
 main()
+
+// Round up floating point money: done
+// Correct flight time calculation: done
+// Date format: MM, DD, YYYY
+// Ex: Dec, 13, 2022
+// Reformat export pdf using pdfkit
+// Export weekly report: ah shit

@@ -1,37 +1,210 @@
-const puppeteer = require('puppeteer')
-const generateHtml = require('./generate_html')
+const PDFDocument = require('pdfkit');
 const fs = require('fs')
 
-const captureScreenshot = async (stats) => {
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox'
-    ]
-  })
+const generatePDFDocument = async (stats) => {
+  // Create a document
+  const weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
   const d = new Date()
-  fileName = `_${d.getMonth()}_${d.getDate()}_${d.getFullYear()}_${d.getHours()}_${d.getMinutes()}_${d.getSeconds()}_${d.getMilliseconds()}`;
-  let outputPath = "./output/Flight Report"+ fileName +".pdf"
-  fs.writeFileSync(outputPath, '');
-  const page = await browser.newPage()
-  await page.setContent(generateHtml(stats))
-  await page.addStyleTag( {
-      path: './html_template/assets/css/style.css'
+  let dateString = `${weekday[d.getDay()]}: ${d.getMonth()}/${d.getDate()}/${d.getFullYear()}`;
+
+  let reportDate = stats['Date from'].split('/').join('_');
+  fileName = `_${stats['ID']}_${reportDate}`;
+  let outputPath = "./output/Flight Report"+ fileName +".pdf";
+
+  const doc = new PDFDocument();
+  // Pipe its output somewhere, like to a file or HTTP response
+  // See below for browser usage
+  doc.pipe(fs.createWriteStream(outputPath));
+  
+  // Embed a font, set the font size, and render some text
+  doc
+    .fontSize(32)
+    .text('Flight daily report', {
+      width: 450,
+      align: 'center'
+    });
+  
+  doc
+    .moveDown(0);
+  doc
+    .fontSize(16)
+    .text(`${dateString}`, {
+      width: 450,
+      align: 'center'
+  })
+  
+  doc
+    .moveDown(0);
+  doc
+    .fontSize(14)
+  .text(`Flights are recorded on a daily basis, and are completed based on analyst Le Thai Vi, any questions please contact email: xxx@gmail.com`, 
+    {
+      width: 475,
+      align: 'center'
     }
   )
-  await page.pdf({
-    path: outputPath,
-    format: 'A4',
-    printBackground: true,
-    margin: {
-      top: "0",
-      right: "0",
-      bottom: "0",
-      left: "0",
-    }
-  })
-  await browser.close()
+  
+  doc
+    .moveDown(1);
+  doc.image('./html_template/assets/image/image 1.jpg', (doc.page.width - 177) /2);
+  
+  doc
+    .moveDown(0.5);
+  doc
+    .font('assets/fonts/Roboto-Bold.ttf')
+    .fontSize(16)
+    .text(`Flight number: `, {
+      continued: true
+    })
+    .font('assets/fonts/Roboto-Light.ttf')
+    .text(`${stats['ID']}`)
+  
+  doc
+    .moveDown(0.5);
+  doc
+    .polygon([doc.x - 10, doc.y + 4], [doc.x - 10 + 5, doc.y + 4 + 5], [doc.x - 10, doc.y + 4 + 10])
+    .fill('gray')
+  
+  doc
+    .fillColor('black')
+    .font('assets/fonts/Roboto-Bold.ttf')
+    .fontSize(16)
+    .text(`Plane name: `, {
+      continued: true
+    })
+    .font('assets/fonts/Roboto-Light.ttf')
+    .text(`${stats["Aircraft"]} - `, {
+      continued: true
+    })
+    .font('assets/fonts/Roboto-Bold.ttf')
+    .text(`Captain: `, {
+      continued: true
+    })
+    .font('assets/fonts/Roboto-Light.ttf')
+    .text(`${stats['Captain']}`)
+  
+  doc
+    .moveDown(0.5);
+  doc
+    .polygon([doc.x - 10, doc.y + 4], [doc.x - 10 + 5, doc.y + 4 + 5], [doc.x - 10, doc.y + 4 + 10])
+    .fill('gray')
+  
+  doc
+    .fillColor('black')
+    .font('assets/fonts/Roboto-Bold.ttf')
+    .text(`Total customers: `, {
+      continued: true
+    })
+    .font('assets/fonts/Roboto-Light.ttf')
+    .text(`${stats['Total customer']}`)
+    
+  doc
+    .moveDown(0.5);
+  doc
+    .polygon([doc.x - 10, doc.y + 4], [doc.x - 10 + 5, doc.y + 4 + 5], [doc.x - 10, doc.y + 4 + 10])
+    .fill('gray')
+  
+  doc
+    .fillColor('black')
+    .font('assets/fonts/Roboto-Bold.ttf')
+    .fontSize(16)
+    .text(`Revenue: `, {
+      continued: true
+    })
+    .font('assets/fonts/Roboto-Light.ttf')
+    .text(`${stats['Revenue']} AUD - `, {
+      continued: true
+    })
+    .font('assets/fonts/Roboto-Bold.ttf')
+    .text(` Operation cost: `, {
+      continued: true
+    })
+    .font('assets/fonts/Roboto-Light.ttf')
+    .text(`${stats['Cost']} AUD - `)
+    .font('assets/fonts/Roboto-Bold.ttf')
+    .text(`Profit: `, {
+      continued: true
+    })
+    .font('assets/fonts/Roboto-Light.ttf')
+    .text(`${stats['Revenue'] - stats['Cost']} AUD`)
+  
+  doc
+    .moveDown(0.5);
+  doc
+    .polygon([doc.x - 10, doc.y + 4], [doc.x - 10 + 5, doc.y + 4 + 5], [doc.x - 10, doc.y + 4 + 10])
+    .fill('gray')
+  
+  doc
+    .fillColor('black')
+    .font('assets/fonts/Roboto-Bold.ttf')
+    .text(`Date start: `, {
+      continued: true
+    })
+    .font('assets/fonts/Roboto-Light.ttf')
+    .text(`${stats['Time From']} ${stats['Date from']}`)
+  
+  doc
+    .moveDown(0.5);
+  doc
+    .polygon([doc.x - 10, doc.y + 4], [doc.x - 10 + 5, doc.y + 4 + 5], [doc.x - 10, doc.y + 4 + 10])
+    .fill('gray')
+  
+  doc
+    .fillColor('black')
+    .font('assets/fonts/Roboto-Bold.ttf')
+    .text(`Date end: `, {
+      continued: true
+    })
+    .font('assets/fonts/Roboto-Light.ttf')
+    .text(`${stats['Time To']} ${stats['Date to']}`)
+
+  doc
+    .moveDown(0.5);
+  doc
+    .polygon([doc.x - 10, doc.y + 4], [doc.x - 10 + 5, doc.y + 4 + 5], [doc.x - 10, doc.y + 4 + 10])
+    .fill('gray')
+  
+  doc
+    .fillColor('black')
+    .font('assets/fonts/Roboto-Bold.ttf')
+    .text(`Flight time: `, {
+      continued: true
+    })
+    .font('assets/fonts/Roboto-Light.ttf')
+    .text(`${stats['Flight time']} hours`)
+
+  doc
+    .moveDown(0.5);
+  doc
+    .polygon([doc.x - 10, doc.y + 4], [doc.x - 10 + 5, doc.y + 4 + 5], [doc.x - 10, doc.y + 4 + 10])
+    .fill('gray')
+  
+  doc
+    .fillColor('black')
+    .font('assets/fonts/Roboto-Bold.ttf')
+    .text(`From: `, {
+      continued: true
+    })
+    .font('assets/fonts/Roboto-Light.ttf')
+    .text(`${stats['From ']}`)
+  
+  doc
+    .moveDown(0.5);
+  doc
+    .polygon([doc.x - 10, doc.y + 4], [doc.x - 10 + 5, doc.y + 4 + 5], [doc.x - 10, doc.y + 4 + 10])
+    .fill('gray')
+  
+  doc
+    .fillColor('black')
+    .font('assets/fonts/Roboto-Bold.ttf')
+    .text(`To: `, {
+      continued: true
+    })
+    .font('assets/fonts/Roboto-Light.ttf')
+    .text(`${stats['To']}`)
+
+  // Finalize PDF file
+  doc.end();
 }
 
-module.exports = captureScreenshot;
+module.exports = generatePDFDocument;
