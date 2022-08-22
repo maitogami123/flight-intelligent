@@ -1,15 +1,15 @@
 const PDFDocument = require('pdfkit');
 const fs = require('fs')
 
-const generatePDFDocument = async (stats) => {
+const generateDailyPDFDocument = async (stats) => {
   // Create a document
   const weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
   const d = new Date()
   let dateString = `${weekday[d.getDay()]}: ${d.getMonth()}/${d.getDate()}/${d.getFullYear()}`;
 
   let reportDate = stats['Date from'].split('/').join('_');
-  fileName = `_${stats['ID']}_${reportDate}`;
-  let outputPath = "./output/Flight Report"+ fileName +".pdf";
+  fileName = `${stats['ID']}_${reportDate}`;
+  let outputPath = "./output/Daily Report/"+ fileName +".pdf";
 
   const doc = new PDFDocument();
   // Pipe its output somewhere, like to a file or HTTP response
@@ -27,7 +27,7 @@ const generatePDFDocument = async (stats) => {
   doc
     .moveDown(0);
   doc
-    .fontSize(16)
+    .fontSize(14)
     .text(`${dateString}`, {
       width: 450,
       align: 'center'
@@ -46,13 +46,13 @@ const generatePDFDocument = async (stats) => {
   
   doc
     .moveDown(1);
-  doc.image('./html_template/assets/image/image 1.jpg', (doc.page.width - 177) /2);
+  doc.image('./assets/image/image 1.jpg', (doc.page.width - 177) /2);
   
   doc
     .moveDown(0.5);
   doc
     .font('assets/fonts/Roboto-Bold.ttf')
-    .fontSize(16)
+    .fontSize(14)
     .text(`Flight number: `, {
       continued: true
     })
@@ -68,7 +68,7 @@ const generatePDFDocument = async (stats) => {
   doc
     .fillColor('black')
     .font('assets/fonts/Roboto-Bold.ttf')
-    .fontSize(16)
+    .fontSize(14)
     .text(`Plane name: `, {
       continued: true
     })
@@ -107,7 +107,7 @@ const generatePDFDocument = async (stats) => {
   doc
     .fillColor('black')
     .font('assets/fonts/Roboto-Bold.ttf')
-    .fontSize(16)
+    .fontSize(14)
     .text(`Revenue: `, {
       continued: true
     })
@@ -141,7 +141,7 @@ const generatePDFDocument = async (stats) => {
       continued: true
     })
     .font('assets/fonts/Roboto-Light.ttf')
-    .text(`${stats['Time From']} ${stats['Date from']}`)
+    .text(`${stats['Time From']} ${(new Date(stats['Date from'].split('/').join(' '))).toLocaleString('en-us', { month: 'short', day: 'numeric', year: 'numeric'})}`)
   
   doc
     .moveDown(0.5);
@@ -156,7 +156,7 @@ const generatePDFDocument = async (stats) => {
       continued: true
     })
     .font('assets/fonts/Roboto-Light.ttf')
-    .text(`${stats['Time To']} ${stats['Date to']}`)
+    .text(`${stats['Time To']} ${(new Date(stats['Date to'].split('/').join(' '))).toLocaleString('en-us', { month: 'short', day: 'numeric', year: 'numeric'})}`)
 
   doc
     .moveDown(0.5);
@@ -207,4 +207,4 @@ const generatePDFDocument = async (stats) => {
   doc.end();
 }
 
-module.exports = generatePDFDocument;
+module.exports = generateDailyPDFDocument;

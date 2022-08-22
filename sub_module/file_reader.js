@@ -5,7 +5,7 @@ function xlsxReader(path) {
     
     let sheet = 'Sheet1'
     let ws = file.Sheets[sheet]
-    ws['!ref'] = "A2:M6"
+    ws['!ref'] = "A2:Z1000"
     
     const temp = reader.utils.sheet_to_json(ws, {
         raw: false,
