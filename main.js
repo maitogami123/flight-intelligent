@@ -1,6 +1,7 @@
 const { xlsxReader } = require('./sub_module/file_reader')
 const dataFormat = require('./sub_module/data_format')
-const generatePDFDocument = require('./sub_module/export_pdf')
+const { generateDailyPDFDocument, generateWeeklyPDFDocument } = require('./sub_module/export_pdf')
+const getWeeklyReportData = require('./sub_module/handle_weekly_data')
 
 data = xlsxReader('./data/Flight data.xlsx');
 
@@ -10,8 +11,9 @@ function main() {
     Promise.all(convertedData)
     .then(result => {
         result.map(function(item) {
-            generatePDFDocument(item)
+            generateDailyPDFDocument(item)
         })
+        getWeeklyReportData(result).forEach(item => generateWeeklyPDFDocument(item))
     });
 }
 
