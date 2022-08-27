@@ -17,10 +17,10 @@ function xlsxReader(path) {
 
 function csvReader(path) {
     return new Promise((resolve, reject) => {
-        const Fs = require('fs');
+        const fs = require('fs');
         const CsvReadableStream = require('csv-reader');
         let data = []
-        let inputStream = Fs.createReadStream(path, 'utf8');
+        let inputStream = fs.createReadStream(path, 'utf8');
     
         inputStream
             .pipe(new CsvReadableStream({ parseNumbers: true, parseBooleans: true, trim: true }))

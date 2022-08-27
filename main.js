@@ -25,6 +25,6 @@ main()
 // Date format: MM, DD, YYYY: done
 // Ex: Dec, 13, 2022
 // Reformat export pdf using pdfkit: done
-// Export weekly report: WIP
-// Logic xác định tuần
+// Logic xác định tuần: done
+// Export weekly report: Preview
 
