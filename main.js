@@ -6,7 +6,6 @@ const getWeeklyReportData = require('./sub_module/handle_weekly_data')
 data = xlsxReader('./data/Flight data.xlsx');
 
 function main() {
-    process.setMaxListeners(0);
     const convertedData = data.map(item => dataFormat(item))
     Promise.all(convertedData)
     .then(result => {
@@ -14,7 +13,6 @@ function main() {
             generateDailyPDFDocument(item)
         })
         generateWeeklyPDFDocument(getWeeklyReportData(result))
-
     });
 }
 
