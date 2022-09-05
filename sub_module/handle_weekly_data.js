@@ -61,21 +61,8 @@ function getWeekNumber(d) {
 }
 
 function generateWeeklyDataSet(dataSheet) {
-  const weeklyData = {}
-  dataSheet.forEach(item => {
-    let result = getWeekNumber(new Date(item['Date from']))
-    if (Object.keys(weeklyData).includes(result.toString())) {
-      weeklyData[result] = [...weeklyData[result], item];
-    }
-    else
-      weeklyData[result] = [item]
-  })
-
   let reportItems = []
-  Object.keys(weeklyData).forEach(week => {
-    reportItems.push(getWeeklyReportData(weeklyData[week]))
-  })
-
+  reportItems = getWeeklyReportData(dataSheet)
   return reportItems
 }
 

@@ -4,9 +4,7 @@ const GoogleChartsNode = require('google-charts-node');
 
 const generateDailyPDFDocument = async (stats) => {
   // Create a document
-  const weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-  const d = new Date()
-  let dateString = `${weekday[d.getDay()]}: ${d.getMonth()}/${d.getDate()}/${d.getFullYear()}`;
+  let dateString = (new Date()).toLocaleString('en-us', {weekday: 'short', month: 'short', day: 'numeric', year: 'numeric'});
 
   let reportDate = stats['Date from'].split('/').join('_');
   fileName = `${stats['ID']}_${reportDate}`;

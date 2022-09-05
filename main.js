@@ -13,7 +13,8 @@ function main() {
         result.map(function(item) {
             generateDailyPDFDocument(item)
         })
-        getWeeklyReportData(result).forEach(item => generateWeeklyPDFDocument(item))
+        generateWeeklyPDFDocument(getWeeklyReportData(result))
+
     });
 }
 
